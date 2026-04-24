@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales Decline Investigation — Mining Equipment OEM</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c-bg:        #F4F2ED;
+    --c-surface:   #FFFFFF;
+    --c-dark:      #1C1B18;
+    --c-mid:       #4A4845;
+    --c-muted:     #8A8880;
+    --c-border:    #DEDAD2;
+    --c-sidebar:   #1C1B18;
+    --c-sidebar-t: #F4F2ED;
+
+    --p-purple:  #534AB7; --p-purple-l: #EEEDFE; --p-purple-d: #3C3489;
+    --p-blue:    #185FA5; --p-blue-l:   #E6F1FB; --p-blue-d:   #0C447C;
+    --p-teal:    #0F6E56; --p-teal-l:   #E1F5EE; --p-teal-d:   #085041;
+    --p-amber:   #854F0B; --p-amber-l:  #FAEEDA; --p-amber-d:  #633806;
+    --p-coral:   #993C1D; --p-coral-l:  #FAECE7; --p-coral-d:  #712B13;
+
+    --g-hyp:     #4A4845; --g-hyp-l:   #F1EFE8;
+    --g-iq:      #0F6E56; --g-iq-l:    #E1F5EE;
+    --g-data:    #185FA5; --g-data-l:  #E6F1FB;
+    --g-rec:     #993C1D; --g-rec-l:   #FAECE7;
+
+    --sidebar-w: 260px;
+    --font-display: 'DM Serif Display', serif;
+    --font-body: 'Outfit', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--c-bg);
+    color: var(--c-dark);
+    display: flex;
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--c-sidebar);
+    color: var(--c-sidebar-t);
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+
+  .sidebar-header {
+    padding: 28px 22px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-logo {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 10px;
+  }
+  .sidebar-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    line-height: 1.3;
+    color: #fff;
+  }
+
+  .sidebar-wq {
+    padding: 16px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-wq-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 6px;
+  }
+  .sidebar-wq-text {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.55;
+    font-style: italic;
+  }
+
+  .sidebar-nav { padding: 14px 0; flex: 1; }
+  .nav-section-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    padding: 8px 22px 4px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 22px;
+    cursor: pointer;
+    transition: background .15s;
+    text-decoration: none;
+    color: rgba(255,255,255,0.55);
+    font-size: 12.5px;
+    font-weight: 400;
+    border-left: 2px solid transparent;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+  .nav-item.active { color: #fff; border-left-color: currentColor; background: rgba(255,255,255,0.06); }
+  .nav-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .nav-item-sub {
+    display: block;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    padding: 3px 22px 3px 42px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color .15s;
+  }
+  .nav-item-sub:hover { color: rgba(255,255,255,0.6); }
+
+  .sidebar-footer {
+    padding: 16px 22px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    font-family: var(--font-mono);
+  }
+
+  /* ── Main content ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: var(--c-dark);
+    color: #fff;
+    padding: 64px 56px 52px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 300px; height: 300px;
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 20px; right: 40px;
+    width: 180px; height: 180px;
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 16px;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: 38px;
+    line-height: 1.15;
+    max-width: 600px;
+    margin-bottom: 20px;
+  }
+  .hero-subtitle {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    max-width: 520px;
+    line-height: 1.65;
+    margin-bottom: 32px;
+  }
+
+  .wq-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 18px 22px;
+    max-width: 640px;
+  }
+  .wq-card-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 8px;
+  }
+  .wq-card-text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.5;
+  }
+
+  /* ── Chain strip ── */
+  .chain-strip {
+    background: var(--c-surface);
+    border-bottom: 1px solid var(--c-border);
+    padding: 14px 56px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .chain-node {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--c-muted);
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: var(--c-bg);
+    border: 1px solid var(--c-border);
+  }
+  .chain-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .chain-arr { color: var(--c-border); font-size: 14px; padding: 0 6px; flex-shrink: 0; }
+
+  /* ── Content area ── */
+  .content { padding: 48px 56px 80px; }
+
+  /* ── Section headers ── */
+  .section-intro {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .section-intro h2 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .section-intro p {
+    font-size: 14px;
+    color: var(--c-mid);
+    max-width: 600px;
+    line-height: 1.65;
+  }
+
+  /* ── KQ cards ── */
+  .kq-block {
+    margin-bottom: 52px;
+    scroll-margin-top: 32px;
+  }
+
+  .kq-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kq-number {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .kq-meta { flex: 1; }
+  .kq-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .kq-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .kq-question {
+    font-size: 13px;
+    color: var(--c-mid);
+    font-style: italic;
+  }
+
+  .kq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .kq-grid-full {
+    grid-template-columns: 1fr;
+  }
+
+  .group-card {
+    background: var(--c-surface);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--c-border);
+  }
+  .group-header {
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .group-icon {
+    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+  }
+  .group-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .group-body { padding: 4px 0; }
+
+  .group-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--c-bg);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--c-mid);
+  }
+  .group-item:last-child { border-bottom: none; }
+  .group-item-bullet {
+    width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; margin-top: 7px;
+  }
+
+  /* Rec card — full width, accented */
+  .rec-card {
+    background: var(--c-surface);
+    border-radius: 10px;
+    border: 1px solid var(--c-border);
+    border-left: 4px solid var(--g-rec);
+    padding: 18px 22px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .rec-icon-wrap {
+    background: var(--g-rec-l);
+    border-radius: 6px;
+    padding: 8px;
+    flex-shrink: 0;
+  }
+  .rec-icon {
+    width: 16px; height: 16px;
+    background: var(--g-rec);
+    border-radius: 3px;
+  }
+  .rec-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--g-rec);
+    margin-bottom: 5px;
+  }
+  .rec-text {
+    font-size: 13.5px;
+    color: var(--c-dark);
+    line-height: 1.6;
+  }
+
+  .kq-divider {
+    border: none;
+    border-top: 1px solid var(--c-border);
+    margin: 48px 0;
+  }
+
+  /* ── Recommendations summary section ── */
+  .rec-summary {
+    background: var(--c-dark);
+    border-radius: 12px;
+    padding: 36px 40px;
+    margin-top: 16px;
+  }
+  .rec-summary h3 {
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .rec-summary-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 28px;
+  }
+  .rec-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .rec-summary-item {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .rec-summary-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 6px;
+  }
+  .rec-summary-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 6px;
+    line-height: 1.35;
+  }
+  .rec-summary-body {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.55;
+  }
+
+  /* ── Traceability footer ── */
+  .trace-section {
+    margin-top: 56px;
+    padding: 28px 32px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 12px;
+  }
+  .trace-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+    margin-bottom: 16px;
+  }
+  .trace-chain {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .trace-node {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--c-border);
+    color: var(--c-mid);
+    background: var(--c-bg);
+  }
+  .trace-arr { color: var(--c-border); font-size: 16px; }
+
+  /* ── Scroll animations ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .hero, .content, .chain-strip { padding-left: 24px; padding-right: 24px; }
+    .kq-grid { grid-template-columns: 1fr; }
+    .rec-summary-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">Bokgoni Matla Consulting</div>
+    <div class="sidebar-title">Sales Decline<br>Investigation</div>
+  </div>
+  <div class="sidebar-wq">
+    <div class="sidebar-wq-label">Wisdom question</div>
+    <div class="sidebar-wq-text">"What should we do to reverse declining sales and restore revenue growth?"</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Framework</div>
+    <a class="nav-item" href="#intro">
+      <span class="nav-dot" style="background:#8A8880"></span> Overview
+    </a>
+
+    <div class="nav-section-label" style="margin-top:8px">Knowledge areas</div>
+
+    <a class="nav-item" href="#kq1">
+      <span class="nav-dot" style="background:#534AB7"></span> Win rate collapsing
+    </a>
+    <a class="nav-item" href="#kq2">
+      <span class="nav-dot" style="background:#185FA5"></span> Wrong product mix
+    </a>
+    <a class="nav-item" href="#kq3">
+      <span class="nav-dot" style="background:#0F6E56"></span> Key accounts spending less
+    </a>
+    <a class="nav-item" href="#kq4">
+      <span class="nav-dot" style="background:#854F0B"></span> Sales activity misdirected
+    </a>
+    <a class="nav-item" href="#kq5">
+      <span class="nav-dot" style="background:#993C1D"></span> Price &amp; value perception gap
+    </a>
+    <a class="nav-item" href="#kq6">
+      <span class="nav-dot" style="background:#534AB7"></span> Aftermarket untapped
+    </a>
+
+    <div class="nav-section-label" style="margin-top:8px">Conclusions</div>
+    <a class="nav-item" href="#recs">
+      <span class="nav-dot" style="background:#993C1D"></span> Recommendations
+    </a>
+    <a class="nav-item" href="#trace">
+      <span class="nav-dot" style="background:#8A8880"></span> Traceability chain
+    </a>
+  </nav>
+  <div class="sidebar-footer">Mining Equipment OEM &bull; 2025</div>
+</aside>
+
+<!-- ── Main ── -->
+<main class="main">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">Analytics investigation &bull; Mining Equipment OEM</div>
+    <h1 class="hero-title">Why are sales declining — and what do we do about it?</h1>
+    <p class="hero-subtitle">A structured investigation across six knowledge areas — from win rate performance to aftermarket capture — each traced from hypothesis to data to recommendation.</p>
+    <div class="wq-card">
+      <div class="wq-card-label">Wisdom question</div>
+      <div class="wq-card-text">"What should we do to reverse declining sales and restore revenue growth across our mining equipment product lines — new equipment, components, rebuilds, and services?"</div>
+    </div>
+  </section>
+
+  <!-- Chain strip -->
+  <div class="chain-strip">
+    <div class="chain-node"><span class="chain-dot" style="background:#534AB7"></span>Wisdom question</div>
+    <span class="chain-arr">›</span>
+    <div class="chain-node"><span class="chain-dot" style="background:#185FA5"></span>Knowledge areas</div>
+    <span class="chain-arr">›</span>
+    <div class="chain-node"><span class="chain-dot" style="background:#4A4845"></span>Hypotheses</div>
+    <span class="chain-arr">›</span>
+    <div class="chain-node"><span class="chain-dot" style="background:#0F6E56"></span>Info questions</div>
+    <span class="chain-arr">›</span>
+    <div class="chain-node"><span class="chain-dot" style="background:#185FA5"></span>Data sources</div>
+    <span class="chain-arr">›</span>
+    <div class="chain-node"><span class="chain-dot" style="background:#993C1D"></span>Recommendations</div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- Intro -->
+    <div id="intro" class="section-intro fade-in">
+      <h2>How to read this investigation</h2>
+      <p>Each of the six knowledge areas below follows the same structure: a short hypothesis label names the concern, the full knowledge question frames it, hypotheses describe what good and poor performance looks like, information questions specify what data to collect, data sources identify where to find it, and a recommendation states what to do if the hypothesis is confirmed. Every element traces back to the wisdom question above.</p>
+    </div>
+
+    <!-- ── KQ 1 ── -->
+    <div id="kq1" class="kq-block fade-in">
+      <div class="kq-header">
+        <div class="kq-number" style="background:#EEEDFE;color:#3C3489">01</div>
+        <div class="kq-meta">
+          <div class="kq-label" style="color:#534AB7">Knowledge area 01</div>
+          <div class="kq-title">Win Rate Collapsing</div>
+          <div class="kq-question">Are we losing deals we should be winning?</div>
+        </div>
+      </div>
+
+      <div class="kq-grid">
+        <div class="group-card">
+          <div class="group-header" style="background:#F8F7F4">
+            <span class="group-icon" style="background:#4A4845"></span>
+            <span class="group-title" style="color:#4A4845">Hypotheses</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>We lose on relationships — competitors have stronger site presence between RFQs and our teams are not visible enough between tender cycles.</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>We lose on commercial terms — our pricing or payment conditions are consistently outside what customers will accept relative to competitor offers.</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>We lose on proposal quality — competitors articulate value more clearly and customers cannot justify the premium without supporting evidence.</div>
+          </div>
+        </div>
+        <div class="group-card">
+          <div class="group-header" style="background:#F0FAF5">
+            <span class="group-icon" style="background:#0F6E56"></span>
+            <span class="group-title" style="color:#0F6E56">Information questions</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>What is our win rate by product line and customer segment over the last 24 months?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>At which stage of the sales cycle are most deals lost — qualification, proposal, or commercial negotiation?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>What reasons do customers give when we debrief lost tenders — and how do these differ by product line?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>How does our win rate compare against our top two competitors on the same opportunities?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kq-grid" style="margin-bottom:16px">
+        <div class="group-card">
+          <div class="group-header" style="background:#EEF5FC">
+            <span class="group-icon" style="background:#185FA5"></span>
+            <span class="group-title" style="color:#185FA5">Data sources</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>CRM — all closed opportunities (won & lost) past 24 months</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Tender log — RFQ participation, submission, and outcome records</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Customer exit interviews and lost-tender debrief notes</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Competitor intelligence reports and market pricing signals</div>
+          </div>
+        </div>
+        <div class="rec-card" style="align-self:stretch">
+          <div class="rec-icon-wrap"><div class="rec-icon"></div></div>
+          <div>
+            <div class="rec-label">Recommendation</div>
+            <div class="rec-text">Implement structured win/loss debriefs on every lost deal above threshold value. Route findings into monthly commercial review. Salespeople cannot improve what they do not systematically track.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="kq-divider">
+
+    <!-- ── KQ 2 ── -->
+    <div id="kq2" class="kq-block fade-in">
+      <div class="kq-header">
+        <div class="kq-number" style="background:#E6F1FB;color:#0C447C">02</div>
+        <div class="kq-meta">
+          <div class="kq-label" style="color:#185FA5">Knowledge area 02</div>
+          <div class="kq-title">Wrong Product Mix</div>
+          <div class="kq-question">Is our product mix aligned with market demand?</div>
+        </div>
+      </div>
+
+      <div class="kq-grid">
+        <div class="group-card">
+          <div class="group-header" style="background:#F8F7F4">
+            <span class="group-icon" style="background:#4A4845"></span>
+            <span class="group-title" style="color:#4A4845">Hypotheses</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>The market has shifted toward smaller, higher-utilisation fleets — our product range is weighted toward large capital equipment that fewer customers are currently buying.</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>Certain product lines are growing in the market but are under-represented in our active sales effort and customer conversations.</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>Our product development cycle is slower than customer adoption patterns — by the time we bring solutions to market, customers have committed to alternatives.</div>
+          </div>
+        </div>
+        <div class="group-card">
+          <div class="group-header" style="background:#F0FAF5">
+            <span class="group-icon" style="background:#0F6E56"></span>
+            <span class="group-title" style="color:#0F6E56">Information questions</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>Which of our product lines have grown, held, or declined in market share over the past 3 years?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>What is the revenue mix across equipment, rebuilds, components, and services — and how has this shifted?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>Which commodity cycles (gold, copper, coal, PGMs) are currently driving customer capex decisions?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>What product lines are our competitors winning with that we do not carry or do not actively promote?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kq-grid" style="margin-bottom:16px">
+        <div class="group-card">
+          <div class="group-header" style="background:#EEF5FC">
+            <span class="group-icon" style="background:#185FA5"></span>
+            <span class="group-title" style="color:#185FA5">Data sources</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>ERP / order management — revenue by product line, region, and period</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Market research reports — OEM market share by equipment segment</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Commodity price & capex cycle data from public mining company reports</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Competitor product catalogues and observed tender wins</div>
+          </div>
+        </div>
+        <div class="rec-card" style="align-self:stretch">
+          <div class="rec-icon-wrap"><div class="rec-icon"></div></div>
+          <div>
+            <div class="rec-label">Recommendation</div>
+            <div class="rec-text">Rank product lines by margin contribution and strategic fit. Redirect sales effort away from structurally declining lines. Retire or bundle lines with persistent low volume and margin drag.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="kq-divider">
+
+    <!-- ── KQ 3 ── -->
+    <div id="kq3" class="kq-block fade-in">
+      <div class="kq-header">
+        <div class="kq-number" style="background:#E1F5EE;color:#085041">03</div>
+        <div class="kq-meta">
+          <div class="kq-label" style="color:#0F6E56">Knowledge area 03</div>
+          <div class="kq-title">Key Accounts Spending Less</div>
+          <div class="kq-question">Are key accounts reducing spend with us?</div>
+        </div>
+      </div>
+
+      <div class="kq-grid">
+        <div class="group-card">
+          <div class="group-header" style="background:#F8F7F4">
+            <span class="group-icon" style="background:#4A4845"></span>
+            <span class="group-title" style="color:#4A4845">Hypotheses</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>Spend decline is concentrated in a small number of large accounts — the broader customer base is stable and the problem is account-specific, not systemic.</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>Customers are consolidating supplier lists and we are being de-selected in favour of OEMs who offer broader service bundles or more integrated support.</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>Relationship continuity has broken down — account ownership has changed hands and trust built with senior mine leadership has not transferred.</div>
+          </div>
+        </div>
+        <div class="group-card">
+          <div class="group-header" style="background:#F0FAF5">
+            <span class="group-icon" style="background:#0F6E56"></span>
+            <span class="group-title" style="color:#0F6E56">Information questions</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>Which accounts show the largest year-on-year revenue decline — and when exactly did the decline begin?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>What is our share of wallet within each key account — what are they buying from competitors that they previously bought from us?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>How frequently are our salespeople visiting key accounts, and at what seniority level (procurement, engineering, operations, C-suite)?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>Have there been significant changes in account ownership or mine management in the last 18 months?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kq-grid" style="margin-bottom:16px">
+        <div class="group-card">
+          <div class="group-header" style="background:#EEF5FC">
+            <span class="group-icon" style="background:#185FA5"></span>
+            <span class="group-title" style="color:#185FA5">Data sources</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>ERP — revenue per account, product line breakdown, and YoY delta</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>CRM — account visit logs, contact records, and relationship mapping</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Customer spend reports where available from account reviews</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>HR and account management handover records</div>
+          </div>
+        </div>
+        <div class="rec-card" style="align-self:stretch">
+          <div class="rec-icon-wrap"><div class="rec-icon"></div></div>
+          <div>
+            <div class="rec-label">Recommendation</div>
+            <div class="rec-text">Identify the top 10 accounts by spend reduction. Assign senior account owners. Conduct relationship audits within 30 days. Quantify what it would take to recover each account before assuming it is lost.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="kq-divider">
+
+    <!-- ── KQ 4 ── -->
+    <div id="kq4" class="kq-block fade-in">
+      <div class="kq-header">
+        <div class="kq-number" style="background:#FAEEDA;color:#633806">04</div>
+        <div class="kq-meta">
+          <div class="kq-label" style="color:#854F0B">Knowledge area 04</div>
+          <div class="kq-title">Sales Activity Misdirected</div>
+          <div class="kq-question">Are salespeople targeting the right opportunities at the right time?</div>
+        </div>
+      </div>
+
+      <div class="kq-grid">
+        <div class="group-card">
+          <div class="group-header" style="background:#F8F7F4">
+            <span class="group-icon" style="background:#4A4845"></span>
+            <span class="group-title" style="color:#4A4845">Hypotheses</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>Our salespeople are active but targeting the wrong accounts — spending time on low-probability or low-value prospects while high-value accounts are underserved.</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>Sales effort is concentrated on new equipment deals because the commission structure rewards capital sales over aftermarket, leaving rebuild and component revenue unsold.</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>There is no systematic prospecting against fleet age data — salespeople are reactive to inbound enquiries rather than proactively building pipeline from installed base intelligence.</div>
+          </div>
+        </div>
+        <div class="group-card">
+          <div class="group-header" style="background:#F0FAF5">
+            <span class="group-icon" style="background:#0F6E56"></span>
+            <span class="group-title" style="color:#0F6E56">Information questions</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>How is each salesperson's time allocated across new equipment, components, rebuilds, and services in an average month?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>What is the average pipeline value per salesperson, and how does conversion rate vary between individuals?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>Are salespeople using fleet age and installed base data to prospect for rebuild and component opportunities?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>What does the incentive structure reward — and does it create a bias toward capital sales at the expense of aftermarket revenue?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kq-grid" style="margin-bottom:16px">
+        <div class="group-card">
+          <div class="group-header" style="background:#EEF5FC">
+            <span class="group-icon" style="background:#185FA5"></span>
+            <span class="group-title" style="color:#185FA5">Data sources</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>CRM — activity logs, pipeline by stage, product line, and salesperson</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Incentive and commission scheme documentation</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Installed base register — fleet age, hours, and service history per unit</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Sales manager call reports and territory reviews</div>
+          </div>
+        </div>
+        <div class="rec-card" style="align-self:stretch">
+          <div class="rec-icon-wrap"><div class="rec-icon"></div></div>
+          <div>
+            <div class="rec-label">Recommendation</div>
+            <div class="rec-text">Build a prospecting calendar from installed base records and make rebuild conversations mandatory on every site visit. Review the incentive structure to reward aftermarket as a primary, not secondary, revenue target.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="kq-divider">
+
+    <!-- ── KQ 5 ── -->
+    <div id="kq5" class="kq-block fade-in">
+      <div class="kq-header">
+        <div class="kq-number" style="background:#FAECE7;color:#712B13">05</div>
+        <div class="kq-meta">
+          <div class="kq-label" style="color:#993C1D">Knowledge area 05</div>
+          <div class="kq-title">Price &amp; Value Perception Gap</div>
+          <div class="kq-question">Is pricing or value perception driving customers away?</div>
+        </div>
+      </div>
+
+      <div class="kq-grid">
+        <div class="group-card">
+          <div class="group-header" style="background:#F8F7F4">
+            <span class="group-icon" style="background:#4A4845"></span>
+            <span class="group-title" style="color:#4A4845">Hypotheses</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>Customers are not walking away on price alone — they are walking away because they cannot quantify the value difference between us and cheaper alternatives.</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>Our list pricing is above market on certain product lines and sales teams are discounting to close, eroding margin without meaningfully improving win rate.</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>Total cost of ownership (TCO) conversations are not happening — customers compare unit price in isolation and our premium is indefensible without uptime and maintenance cost data.</div>
+          </div>
+        </div>
+        <div class="group-card">
+          <div class="group-header" style="background:#F0FAF5">
+            <span class="group-icon" style="background:#0F6E56"></span>
+            <span class="group-title" style="color:#0F6E56">Information questions</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>What is the average discount applied at close, by product line and by salesperson?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>In deals where we lost on price, how large was the gap — and how often does it fall within our discount authority?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>Do customers who bought on lowest unit price return for components and rebuilds at the same rate as full-value customers?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>Are sales teams equipped with TCO models and trained to use them in customer conversations?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kq-grid" style="margin-bottom:16px">
+        <div class="group-card">
+          <div class="group-header" style="background:#EEF5FC">
+            <span class="group-icon" style="background:#185FA5"></span>
+            <span class="group-title" style="color:#185FA5">Data sources</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>ERP / quote system — list price vs invoice price, discount % by product line</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>CRM — lost deal pricing notes and competitor price intelligence</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Customer lifecycle revenue data — capex vs aftermarket spend per unit over life</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Sales training records — TCO tool adoption and usage frequency</div>
+          </div>
+        </div>
+        <div class="rec-card" style="align-self:stretch">
+          <div class="rec-icon-wrap"><div class="rec-icon"></div></div>
+          <div>
+            <div class="rec-label">Recommendation</div>
+            <div class="rec-text">Develop TCO tools for the three highest-volume product lines. Train sales teams to lead with cost-per-tonne and uptime metrics rather than unit price. Price defensibility follows value clarity — not deeper discounts.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="kq-divider">
+
+    <!-- ── KQ 6 ── -->
+    <div id="kq6" class="kq-block fade-in">
+      <div class="kq-header">
+        <div class="kq-number" style="background:#EEEDFE;color:#3C3489">06</div>
+        <div class="kq-meta">
+          <div class="kq-label" style="color:#534AB7">Knowledge area 06</div>
+          <div class="kq-title">Aftermarket Revenue Untapped</div>
+          <div class="kq-question">Is the aftermarket being actively and effectively sold?</div>
+        </div>
+      </div>
+
+      <div class="kq-grid">
+        <div class="group-card">
+          <div class="group-header" style="background:#F8F7F4">
+            <span class="group-icon" style="background:#4A4845"></span>
+            <span class="group-title" style="color:#4A4845">Hypotheses</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>Aftermarket is under-captured because it is treated as a service function rather than a sales function — no explicit targets, no pipeline, no accountability structure.</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>Customers are sourcing components and rebuild work from third-party suppliers and local workshops — often because our lead times or parts pricing are not competitive.</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#4A4845"></span>We do not have reliable visibility into our installed base — salespeople cannot proactively target rebuild cycles because they do not know which units are approaching service intervals.</div>
+          </div>
+        </div>
+        <div class="group-card">
+          <div class="group-header" style="background:#F0FAF5">
+            <span class="group-icon" style="background:#0F6E56"></span>
+            <span class="group-title" style="color:#0F6E56">Information questions</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>What percentage of our installed base is active on our components and service contracts — and how has this trended over time?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>What is the average aftermarket revenue generated per unit over the equipment lifecycle?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>Where are customers going for components and rebuilds when they are not coming to us — and what are their stated reasons?</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#0F6E56"></span>Do we have a complete, current record of every unit in the field — its age, hours, and next major service milestone?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kq-grid" style="margin-bottom:16px">
+        <div class="group-card">
+          <div class="group-header" style="background:#EEF5FC">
+            <span class="group-icon" style="background:#185FA5"></span>
+            <span class="group-title" style="color:#185FA5">Data sources</span>
+          </div>
+          <div class="group-body">
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Installed base register — unit records, service history, and contract status</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>ERP — aftermarket revenue by account, product line, and quarter</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Service and parts orders — fill rate, lead time, and third-party leakage signals</div>
+            <div class="group-item"><span class="group-item-bullet" style="background:#185FA5"></span>Customer interviews on sourcing decisions for parts and rebuild work</div>
+          </div>
+        </div>
+        <div class="rec-card" style="align-self:stretch">
+          <div class="rec-icon-wrap"><div class="rec-icon"></div></div>
+          <div>
+            <div class="rec-label">Recommendation</div>
+            <div class="rec-text">Set explicit aftermarket revenue targets per salesperson. Include components and services in all major account reviews. Consider separating aftermarket as a dedicated sales motion with its own pipeline and incentive structure.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="kq-divider">
+
+    <!-- ── Recommendations summary ── -->
+    <div id="recs" class="fade-in">
+      <div class="section-intro" style="border-bottom:none;margin-bottom:20px">
+        <h2>Answering the wisdom question</h2>
+        <p>With the investigation complete, we return to the original question. Each recommendation below is traceable to a knowledge area, a set of hypotheses, and specific data. No recommendation stands alone.</p>
+      </div>
+      <div class="rec-summary">
+        <h3>What we should do</h3>
+        <p class="rec-summary-sub">Six prioritised actions to reverse the sales decline</p>
+        <div class="rec-summary-grid">
+          <div class="rec-summary-item">
+            <div class="rec-summary-num">REC 01 — Win rate</div>
+            <div class="rec-summary-title">Fix the pipeline before chasing volume</div>
+            <div class="rec-summary-body">Structured win/loss debriefs on every lost deal above threshold. Route findings into monthly commercial review. You cannot improve what you do not track.</div>
+          </div>
+          <div class="rec-summary-item">
+            <div class="rec-summary-num">REC 02 — Product mix</div>
+            <div class="rec-summary-title">Rebalance effort toward high-margin product lines</div>
+            <div class="rec-summary-body">Rank product lines by margin and strategic fit. Redirect effort from structurally declining lines. Retire or bundle low-volume, low-margin products.</div>
+          </div>
+          <div class="rec-summary-item">
+            <div class="rec-summary-num">REC 03 — Key accounts</div>
+            <div class="rec-summary-title">Launch an account recovery programme</div>
+            <div class="rec-summary-body">Identify top 10 accounts by spend reduction. Assign senior owners. Conduct relationship audits within 30 days before writing off any account.</div>
+          </div>
+          <div class="rec-summary-item">
+            <div class="rec-summary-num">REC 04 — Sales activity</div>
+            <div class="rec-summary-title">Redirect activity toward rebuild and component cycles</div>
+            <div class="rec-summary-body">Build a prospecting calendar from installed base data. Make rebuild conversations mandatory on every site visit. Review what the incentive structure actually rewards.</div>
+          </div>
+          <div class="rec-summary-item">
+            <div class="rec-summary-num">REC 05 — Pricing</div>
+            <div class="rec-summary-title">Strengthen value articulation, not just pricing</div>
+            <div class="rec-summary-body">Develop TCO tools for the three highest-volume lines. Train teams to lead with cost-per-tonne and uptime. Price defensibility follows value clarity.</div>
+          </div>
+          <div class="rec-summary-item">
+            <div class="rec-summary-num">REC 06 — Aftermarket</div>
+            <div class="rec-summary-title">Make aftermarket a primary revenue target</div>
+            <div class="rec-summary-body">Set explicit aftermarket targets per salesperson. Include components and services in all account reviews. Consider a dedicated aftermarket sales motion.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Traceability ── -->
+    <div id="trace" class="trace-section fade-in" style="margin-top:40px">
+      <div class="trace-label">Traceability chain — every element connects</div>
+      <div class="trace-chain">
+        <div class="trace-node" style="background:#EEEDFE;color:#3C3489;border-color:#AFA9EC">Wisdom question</div>
+        <span class="trace-arr">›</span>
+        <div class="trace-node" style="background:#E6F1FB;color:#0C447C;border-color:#85B7EB">Knowledge areas</div>
+        <span class="trace-arr">›</span>
+        <div class="trace-node" style="background:#F1EFE8;color:#4A4845;border-color:#D3D1C7">Hypotheses</div>
+        <span class="trace-arr">›</span>
+        <div class="trace-node" style="background:#E1F5EE;color:#085041;border-color:#5DCAA5">Information questions</div>
+        <span class="trace-arr">›</span>
+        <div class="trace-node" style="background:#E6F1FB;color:#0C447C;border-color:#85B7EB">Data sources</div>
+        <span class="trace-arr">›</span>
+        <div class="trace-node" style="background:#FAECE7;color:#712B13;border-color:#F0997B">Findings</div>
+        <span class="trace-arr">›</span>
+        <div class="trace-node" style="background:#FAECE7;color:#712B13;border-color:#F0997B">Recommendations</div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+// Scroll spy
+const sections = document.querySelectorAll('[id]');
+const navItems = document.querySelectorAll('.nav-item');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navItems.forEach(n => {
+        n.classList.toggle('active', n.getAttribute('href') === '#' + e.target.id);
+      });
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+
+sections.forEach(s => observer.observe(s));
+
+// Fade-in on scroll
+const fadeEls = document.querySelectorAll('.fade-in');
+const fadeObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+fadeEls.forEach(el => fadeObs.observe(el));
+</script>
+</body>
+</html>
